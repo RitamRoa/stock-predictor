@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score, accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 import xgboost as xgb
 import ta
-from visualizer import plot_data, plot_predictions
+from visualizer import plot_data, plot_predictions, plot_confusion_matrix_bar
 from textblob import TextBlob
 import requests
 from datetime import datetime, timedelta
@@ -355,6 +355,9 @@ def train_model(df):
         print(f"F1 Score: {f1:.4f}")
         print("\nConfusion Matrix:")
         print(conf_matrix)
+        
+        # Plot confusion matrix bar plot
+        plot_confusion_matrix_bar(y_test, y_pred, df.name if hasattr(df, 'name') else 'Stock')
         
         # Calculate feature importance
         print("Debug: Calculating feature importance")

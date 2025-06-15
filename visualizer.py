@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+from sklearn.metrics import confusion_matrix
 
 def plot_data(df, symbol):
     try:
@@ -106,4 +107,49 @@ def plot_predictions(df, predictions, symbol):
         
     except Exception as e:
         print(f"Error in plot_predictions: {str(e)}")
+        raise
+
+def plot_confusion_matrix_bar(y_true, y_pred, symbol):
+    try:
+        # Calculate confusion matrix
+        cm = confusion_matrix(y_true, y_pred)
+        
+        # Create labels for the confusion matrix
+        labels = ['True Negative', 'False Positive', 'False Negative', 'True Positive']
+        values = cm.flatten()
+        
+        # Create color mapping
+        colors = ['#2ecc71', '#e74c3c', '#e74c3c', '#2ecc71']  # Green for correct, Red for incorrect
+        
+        # Create figure
+        plt.figure(figsize=(10, 6))
+        
+        # Create bar plot
+        bars = plt.bar(labels, values, color=colors)
+        
+        # Add value labels on top of bars
+        for bar in bars:
+            height = bar.get_height()
+            plt.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{int(height)}',
+                    ha='center', va='bottom')
+        
+        # Customize plot
+        plt.title(f'Prediction vs Actual Direction - {symbol}', pad=20)
+        plt.xlabel('Prediction Type')
+        plt.ylabel('Count')
+        plt.xticks(rotation=45)
+        
+        # Add accuracy information
+        accuracy = (cm[0,0] + cm[1,1]) / cm.sum()
+        plt.text(0.02, 0.98, f'Accuracy: {accuracy:.2%}',
+                transform=plt.gca().transAxes,
+                bbox=dict(facecolor='white', alpha=0.8))
+        
+        # Adjust layout and display
+        plt.tight_layout()
+        plt.show()
+        
+    except Exception as e:
+        print(f"Error in plot_confusion_matrix_bar: {str(e)}")
         raise
