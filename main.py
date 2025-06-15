@@ -24,10 +24,9 @@ def get_user_input():
 def display_prediction(prediction_details):
     print("\n=== Prediction Results ===")
     print(f"Current Price: ₹{prediction_details['current_price']:.2f}")
-    print(f"Predicted Price: ₹{prediction_details['predicted_price']:.2f}")
-    print(f"Expected Change: {prediction_details['expected_change']:.2f}%")
-    print(f"Prediction Interval: ₹{prediction_details['prediction_interval'][0]:.2f} - ₹{prediction_details['prediction_interval'][1]:.2f}")
-    print(f"Prediction Confidence: {prediction_details['confidence']:.2%}")
+    print(f"Predicted Direction: {'UP' if prediction_details['prediction'] == 1 else 'DOWN'}")
+    print(f"Probability of Price Increase: {prediction_details['probability']:.2%}")
+    print(f"Confidence: {prediction_details['confidence']:.2%}")
 
 def main():
     try:
@@ -44,9 +43,16 @@ def main():
             print(f"Columns: {df.columns.tolist()}")
             
             # Train model and get predictions
-            model, feature_scaler, target_scaler, X_test, y_test = train_model(df)
-            prediction, confidence = predict_next_day(df, model, feature_scaler, target_scaler)
-            prediction_details = get_prediction_details(df, prediction, confidence, X_test, y_test)
+            model_data = train_model(df)
+            prediction, confidence = predict_next_day(df, model_data)
+            
+            # Create prediction details
+            prediction_details = {
+                'current_price': df['Close'].iloc[-1],
+                'prediction': prediction,
+                'probability': confidence if prediction == 1 else 1 - confidence,
+                'confidence': confidence
+            }
             
             # Display prediction results
             display_prediction(prediction_details)
