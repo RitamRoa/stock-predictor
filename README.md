@@ -46,7 +46,7 @@ stock-predictor/
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/your-username/stock-predictor.git
+git clone https://github.com/RitamRoa/stock-predictor.git
 cd stock-predictor
 python -m venv .venv
 .venv\Scripts\activate        # Windows
